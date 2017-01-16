@@ -1,0 +1,11 @@
+graph G {
+	spine01 [shape=box, style=filled, color=skyblue, pos="1,2!", fontname="Courier"];
+	spine02 [shape=box, style=filled, color=skyblue, pos="3,2!", fontname="Courier"];
+	leaf01 [shape=box, pos="0,0!", fontname="Courier"];
+	leaf02 [shape=box, pos="2,0!", fontname="Courier"];
+	edge [len=15];
+	spine01 -- leaf01;
+	spine01 -- leaf02;
+	spine02 -- leaf01;
+	spine02 -- leaf02;
+}

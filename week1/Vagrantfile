@@ -1,0 +1,154 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+veos_box = 'vEOS-lab-4.17.2F'
+oob_network = 'vboxnet5'
+
+Vagrant.configure("2") do |config|
+  config.vm.define 'spine01' do |spine01|
+    spine01.vm.box = veos_box
+
+    # Management1 --> Virtualbox nic1
+
+    # Ethernet1
+    spine01.vm.network 'private_network', ip: '10.42.42.101', auto_config: false
+
+    # Ethernet2
+    spine01.vm.network 'private_network', virtualbox__intnet: 'leaf01-spine01',
+      ip: '169.254.1.11', auto_config: false
+
+    # Ethernet3
+    spine01.vm.network 'private_network', virtualbox__intnet: 'leaf02-spine01',
+      ip: '169.254.1.11', auto_config: false
+
+    spine01.vm.provider :virtualbox do |vb|
+      vb.customize ['modifyvm', :id, '--nic2', 'hostonly',
+                    '--hostonlyadapter2', oob_network]
+    end
+
+    config.vm.provision 'shell', inline: <<-SHELL
+     FastCli -p 15 -c "configure
+     hostname spine01
+     vrf definition MGMT
+      rd 1:1
+     interface Ethernet 1
+      no switchport
+      vrf forwarding MGMT
+      ip address 10.42.42.101/24
+      no shutdown
+     end
+     copy running-config startup-config"
+    SHELL
+  end
+
+  config.vm.define 'spine02' do |spine02|
+    spine02.vm.box = veos_box
+
+    # Management1 --> Virtualbox nic1
+
+    # Ethernet1
+    spine02.vm.network 'private_network', ip: '10.42.42.102', auto_config: false
+
+    # Ethernet2
+    spine02.vm.network 'private_network', virtualbox__intnet: 'leaf01-spine02',
+      ip: '169.254.1.11', auto_config: false
+
+    # Ethernet3
+    spine02.vm.network 'private_network', virtualbox__intnet: 'leaf02-spine02',
+      ip: '169.254.1.11', auto_config: false
+
+    spine02.vm.provider :virtualbox do |vb|
+      # Ethernet1
+      vb.customize ['modifyvm', :id, '--nic2', 'hostonly',
+                    '--hostonlyadapter2', oob_network]
+    end
+
+    config.vm.provision 'shell', inline: <<-SHELL
+     FastCli -p 15 -c "configure
+     hostname spine02
+     vrf definition MGMT
+      rd 1:1
+     interface Ethernet 1
+      no switchport
+      vrf forwarding MGMT
+      ip address 10.42.42.102/24
+      no shutdown
+     end
+     copy running-config startup-config"
+    SHELL
+  end
+
+  config.vm.define 'leaf01' do |leaf01|
+    leaf01.vm.box = veos_box
+
+    # Management1 --> Virtualbox nic1
+
+    # Ethernet1
+    leaf01.vm.network 'private_network', ip: '10.42.42.103', auto_config: false
+
+    # Ethernet2
+    leaf01.vm.network 'private_network', virtualbox__intnet: 'leaf01-spine01',
+      ip: '169.254.1.11', auto_config: false
+
+    # Ethernet3
+    leaf01.vm.network 'private_network', virtualbox__intnet: 'leaf02-spine02',
+      ip: '169.254.1.11', auto_config: false
+
+    leaf01.vm.provider :virtualbox do |vb|
+      # Ethernet1
+      vb.customize ['modifyvm', :id, '--nic2', 'hostonly',
+                    '--hostonlyadapter2', oob_network]
+    end
+
+    config.vm.provision 'shell', inline: <<-SHELL
+     FastCli -p 15 -c "configure
+     hostname leaf01
+     vrf definition MGMT
+      rd 1:1
+     interface Ethernet 1
+      no switchport
+      vrf forwarding MGMT
+      ip address 10.42.42.103/24
+      no shutdown
+     end
+     copy running-config startup-config"
+    SHELL
+  end
+
+  config.vm.define 'leaf02' do |leaf02|
+    leaf02.vm.box = veos_box
+
+    # Management1 --> Virtualbox nic1
+
+    # Ethernet1
+    leaf02.vm.network 'private_network', ip: '10.42.42.104', auto_config: false
+
+    # Ethernet2
+    leaf02.vm.network 'private_network', virtualbox__intnet: 'leaf02-spine01',
+      ip: '169.254.1.11', auto_config: false
+
+    # Ethernet3
+    leaf02.vm.network 'private_network', virtualbox__intnet: 'leaf02-spine02',
+      ip: '169.254.1.11', auto_config: false
+
+    leaf02.vm.provider :virtualbox do |vb|
+      # Ethernet1
+      vb.customize ['modifyvm', :id, '--nic2', 'hostonly',
+                    '--hostonlyadapter2', oob_network]
+    end
+
+    config.vm.provision 'shell', inline: <<-SHELL
+     FastCli -p 15 -c "configure
+     hostname leaf02
+     vrf definition MGMT
+      rd 1:1
+     interface Ethernet 1
+      no switchport
+      vrf forwarding MGMT
+      ip address 10.42.42.104/24
+      no shutdown
+     end
+     copy running-config startup-config"
+    SHELL
+  end
+end

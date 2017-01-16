@@ -1,0 +1,8 @@
+spine01 ansible_host=10.42.42.101
+spine02 ansible_host=10.42.42.102
+leaf01 ansible_host=10.42.42.103
+leaf02 ansible_host=10.42.42.104
+
+[all:vars]
+ansible_user=vagrant
+ansible_ssh_pass=vagrant

@@ -1,11 +1,13 @@
-graph G {
-	spine01 [shape=box, style=filled, color=skyblue, pos="1,2!", fontname="Courier"];
-	spine02 [shape=box, style=filled, color=skyblue, pos="3,2!", fontname="Courier"];
-	leaf01 [shape=box, pos="0,0!", fontname="Courier"];
-	leaf02 [shape=box, pos="2,0!", fontname="Courier"];
-	edge [len=15];
-	spine01 -- leaf01;
-	spine01 -- leaf02;
-	spine02 -- leaf01;
-	spine02 -- leaf02;
+//FIXME use neato for unidirectional graph
+digraph G {
+	nodesep=0.5;
+	spine01 [label="spine01\n10.42.42.101", shape=box, style=filled, color=skyblue, fontname="Courier"];
+	spine02 [label="spine02\n10.42.42.102", shape=box, style=filled, color=skyblue, fontname="Courier"];
+	leaf01 [label="leaf01\n10.42.42.103", shape=box, fontname="Courier"];
+	leaf02 [label="leaf02\n10.42.42.104", shape=box, fontname="Courier"];
+	edge [minlen=5];
+	spine01 -> leaf01 [label="e2 - e2", fontname="Courier" dir=none];
+	spine01 -> leaf02 [label="e3 - e2", fontname="Courier" dir=none];
+	spine02 -> leaf01 [label="e2 - e3", fontname="Courier" dir=none];
+	spine02 -> leaf02 [label="e3 - e3", fontname="Courier" dir=none];
 }

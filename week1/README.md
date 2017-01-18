@@ -16,6 +16,9 @@ I'm using an out-of-band network for controlling the boxes with Ansible.
 
 ## Command output from Ansible raw module
 
+
+	$ ansible-playbook week1.yml
+
 	PLAY [Run show version] ********************************************************
 
 	TASK [raw] *********************************************************************
